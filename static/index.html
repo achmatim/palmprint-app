@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengambilan Data Telapak Tangan & Kepribadian BFI-60</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Chart.js CDN for OCEAN Radar Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Background decorative elements -->
+        <div class="glow-sphere sphere-1"></div>
+        <div class="glow-sphere sphere-2"></div>
+
+        <!-- Sidebar / Progress Stepper -->
+        <aside class="sidebar glass">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h2>PALM<span>SCAN</span></h2>
+            </div>
+            <p class="brand-subtitle">Sistem Akuisisi Data Biometrik & Kepribadian</p>
+
+            <!-- Stepper Indicators -->
+            <div class="stepper">
+                <div id="step-indicator-1" class="step-item active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Identitas Responden</div>
+                </div>
+                <div id="step-indicator-2" class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Kuesioner BFI-60</div>
+                </div>
+                <div id="step-indicator-3" class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Perekaman Kamera</div>
+                </div>
+                <div id="step-indicator-4" class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Ethical Clearance</div>
+                </div>
+            </div>
+
+            <!-- Admin Panel / Export Utilities -->
+            <div class="admin-panel" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                <h4 class="admin-title">Panel Admin / Peneliti</h4>
+                <a href="/export-survey" class="btn-secondary" id="btn-export-csv" download style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon-svg" style="width: 16px; height: 16px; margin-right: 8px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Ekspor CSV Survei
+                </a>
+                <button class="btn-secondary" id="btn-export-images" style="display: flex; align-items: center; justify-content: center; width: 100%; border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; color: var(--text-primary); background: rgba(255,255,255,0.04); font-size: 0.82rem; padding: 0.6rem; font-family: var(--font-sans); font-weight: 500; transition: var(--transition-smooth);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon-svg" style="width: 16px; height: 16px; margin-right: 8px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Ekspor ZIP Gambar
+                </button>
+            </div>
+
+            <div class="form-footer">
+                <p>Lab. Computer Vision & Image Processing (CVIP) FTI UBL &copy; 2026</p>
+            </div>
+        </aside>
+
+        <!-- Main Display / Camera Workspace -->
+        <main class="workspace">
+            
+            <!-- Step 1: Identitas & Kata Pengantar -->
+            <div id="step-1-panel" class="wizard-step-panel glass">
+                <div class="step-header">
+                    <h2>Langkah 1: Identitas Responden</h2>
+                    <p>Silakan baca kata pengantar dan lengkapi data diri Anda sebelum memulai pengisian kuesioner.</p>
+                </div>
+
+                <div class="step-1-grid">
+                    <!-- Kata Pengantar -->
+                    <div class="intro-card glass-inner">
+                        <h3>Kata Pengantar Kuesioner</h3>
+                        <div class="intro-content">
+                            <p>Dengan hormat,</p>
+                            <p>Saya adalah mahasiswa Program Doktor (S3) Ilmu Komputer yang sedang melaksanakan penelitian disertasi. Penelitian ini bertujuan untuk menganalisis hubungan antara fitur biometrik telapak tangan (palmprint) dan ciri-ciri kepribadian dengan pendekatan deep learning sebagai bagian dari pengembangan ilmu pengetahuan di bidang biometrika dan kecerdasan buatan.</p>
+                            <p>Sehubungan dengan hal tersebut, mohon kesediaan Bapak/Ibu/Saudara/i untuk berpartisipasi dengan mengisi kuesioner ini. Kuesioner ini bertujuan untuk mengukur ciri-ciri kepribadian responden dan tidak terdapat jawaban benar atau salah. Oleh karena itu, diharapkan responden dapat memberikan jawaban secara jujur sesuai dengan kondisi dan persepsi diri masing-masing.</p>
+                            <p>Seluruh data dan informasi yang diberikan akan dijaga kerahasiaannya dan hanya digunakan untuk keperluan akademik dan penelitian. Partisipasi Bapak/Ibu/Saudara/i sangat berarti dalam mendukung kelancaran dan keberhasilan penelitian ini.</p>
+                            <p>Atas perhatian dan kesediaan Bapak/Ibu/Saudara/i, saya mengucapkan terima kasih.</p>
+                            
+                            <div class="intro-signature">
+                                <strong>Hormat saya,</strong><br>
+                                <span>Painem</span><br>
+                                <small>Mahasiswa Program Doktor Ilmu Komputer<br>Universitas Budi Luhur</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biodata Form -->
+                    <div class="form-card glass-inner">
+                        <h3>Formulir Identitas</h3>
+                        <form id="biodata-form">
+                            <div class="form-group">
+                                <label for="responden-id">ID Responden (Otomatis)</label>
+                                <div class="input-id-container">
+                                    <input type="text" id="responden-id" readonly required>
+                                    <button type="button" id="btn-regen-id" title="Generate ID Baru">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nama">Nama Lengkap</label>
+                                <input type="text" id="nama" placeholder="Masukkan nama responden" required autocomplete="off">
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="usia">Usia (Tahun)</label>
+                                    <input type="number" id="usia" min="1" max="120" placeholder="Thn" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jenis Kelamin</label>
+                                    <div class="radio-group-horizontal">
+                                        <label class="radio-label">
+                                            <input type="radio" name="jenis-kelamin" value="Laki-laki" required> Laki-laki
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="jenis-kelamin" value="Perempuan" required> Perempuan
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="pendidikan">Pendidikan Terakhir</label>
+                                    <select id="pendidikan" required>
+                                        <option value="" disabled selected>Pilih...</option>
+                                        <option value="SMA">SMA</option>
+                                        <option value="S1">S1</option>
+                                        <option value="S2">S2</option>
+                                        <option value="S3">S3</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bidang-pekerjaan">Bidang Pekerjaan</label>
+                                    <select id="bidang-pekerjaan" required>
+                                        <option value="" disabled selected>Pilih...</option>
+                                        <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                        <option value="Pendidikan (guru, dosen)">Pendidikan (guru, dosen)</option>
+                                        <option value="Teknologi Informasi (Programmer, analis data, cybersecurity)">Teknologi Informasi (Programmer, analis data, cybersecurity)</option>
+                                        <option value="Kesehatan (dokter, perawat)">Kesehatan (dokter, perawat)</option>
+                                        <option value="Pemasaran & Penjualan Hukum, Seni & Desain (desainer grafis, animator)">Pemasaran & Penjualan Hukum, Seni & Desain (desainer grafis, animator)</option>
+                                        <option value="Teknik & Industri, Transportasi (pilot, masinis, driver)">Teknik & Industri, Transportasi (pilot, masinis, driver)</option>
+                                        <option value="Layanan Masyarakat (polisi, pemadam kebakaran)">Layanan Masyarakat (polisi, pemadam kebakaran)</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="jumlah-medsos">Jumlah Akun Media Sosial Aktif</label>
+                                    <input type="number" id="jumlah-medsos" min="0" placeholder="Jumlah akun" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="penggunaan-medsos">Lama Penggunaan Medsos (per hari)</label>
+                                    <select id="penggunaan-medsos" required>
+                                        <option value="" disabled selected>Pilih...</option>
+                                        <option value="< 1 Jam">&lt; 1 Jam</option>
+                                        <option value="1-3 Jam">1-3 Jam</option>
+                                        <option value="> 3 Jam">&gt; 3 Jam</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Camera Testing Widget on Step 1 -->
+                            <div class="camera-test-widget" style="margin-top: 1rem; padding: 1rem; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 0.6rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Tes Ketersediaan Kamera</span>
+                                    <div id="camera-test-indicator" class="status-indicator red" style="font-size: 0.72rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold;">Kamera Nonaktif</div>
+                                </div>
+                                <div id="camera-test-preview-wrapper" class="hidden" style="width: 100%; aspect-ratio: 4/3; border-radius: 6px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 0.4rem;">
+                                    <video id="webcam-test-preview" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;" class="mirrored"></video>
+                                </div>
+                                <div style="display: flex; gap: 0.6rem;">
+                                    <button type="button" id="btn-test-camera" style="flex: 1; padding: 0.5rem; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--accent-blue); background: rgba(59,130,246,0.15); color: white; cursor: pointer; font-weight: 600; transition: var(--transition-smooth);">Uji Kamera</button>
+                                    <button type="button" id="btn-stop-test-camera" class="hidden" style="flex: 1; padding: 0.5rem; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--accent-red); background: rgba(239,68,68,0.15); color: white; cursor: pointer; font-weight: 600; transition: var(--transition-smooth);">Matikan Kamera</button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="margin-top: 1.5rem; width: 100%;">
+                                Lanjut ke Kuesioner BFI-60
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-left: 8px;">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Kuesioner BFI-60 -->
+            <div id="step-2-panel" class="wizard-step-panel glass hidden">
+                <div class="step-header">
+                    <h2>Langkah 2: Kuesioner Ciri-Ciri Kepribadian (BFI-60)</h2>
+                    <p>Petunjuk: Klik pada skor (1 hingga 5) untuk setiap pernyataan berikut yang paling mencerminkan diri Anda secara jujur.</p>
+                    
+                    <div class="bfi-legend">
+                        <span><strong>1</strong>: Sangat Tidak Setuju (STS)</span>
+                        <span><strong>2</strong>: Tidak Setuju (TS)</span>
+                        <span><strong>3</strong>: Netral / Ragu-ragu (N)</span>
+                        <span><strong>4</strong>: Setuju (S)</span>
+                        <span><strong>5</strong>: Sangat Setuju (SS)</span>
+                    </div>
+
+                    <!-- Progress Indicator -->
+                    <div class="bfi-progress-container">
+                        <div class="bfi-progress-header">
+                            <span>Progress Pengisian Pernyataan</span>
+                            <span id="bfi-progress-text">0 dari 60 terjawab (0%)</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="bfi-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BFI Questions Table/List -->
+                <div class="bfi-questions-container glass-inner">
+                    <div id="bfi-questions-list">
+                        <!-- Questions will be dynamically injected here by JS -->
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" id="btn-back-to-step-1" class="btn-secondary">Kembali</button>
+                    <button type="button" id="btn-go-to-step-3" class="btn-primary" disabled>
+                        Lanjut ke Perekaman Kamera
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-left: 8px;">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Perekaman Citra Telapak Tangan (Kamera) -->
+            <div id="step-3-panel" class="wizard-step-panel glass hidden">
+                <div id="capture-panel" class="capture-container">
+                    <div class="capture-header">
+                        <div class="phase-badge-container">
+                            <span id="current-phase-badge" class="badge">TANGAN KANAN</span>
+                        </div>
+                        
+                        <div class="camera-controls">
+                            <div class="control-select">
+                                <label for="camera-select">Kamera:</label>
+                                <select id="camera-select"></select>
+                            </div>
+                            <button id="btn-mirror" class="btn-icon" title="Cerminkan Pratinjau">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2v20M2 12h20M2 4l6 6M22 4l-6 6M2 20l6-6M22 20l-6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="video-wrapper">
+                        <!-- Video Feed -->
+                        <video id="webcam" autoplay playsinline></video>
+
+                        <!-- Hand Bounding Box Overlay -->
+                        <div id="hand-bbox" class="hand-bbox-overlay hidden"></div>
+
+                        <!-- Real-time HUD Camera Guidance -->
+                        <div id="camera-guidance" class="camera-guidance hidden">Posisikan Tangan Anda</div>
+
+                        <!-- SVG Silhouette Overlays -->
+                        <!-- Right Hand Silhouette -->
+                        <div id="overlay-right" class="camera-overlay">
+                            <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid meet">
+                                <!-- High tech guidelines -->
+                                <circle cx="50" cy="70" r="15" class="scan-target" />
+                                <line x1="50" y1="20" x2="50" y2="100" class="scan-line-dashed" />
+                                <line x1="20" y1="70" x2="80" y2="70" class="scan-line-dashed" />
+                                
+                                <!-- Right hand outline path -->
+                                <path d="
+                                    M 50 112 
+                                    C 46 108, 42 102, 38 95
+                                    C 32 87, 21 82, 17 76
+                                    C 14 70, 16 64, 21 61
+                                    C 25 58, 29 63, 31 69
+                                    L 31 38
+                                    C 31 33, 35 33, 36 38
+                                    L 36 62
+                                    L 42 22
+                                    C 42 17, 46 17, 47 22
+                                    L 47 60
+                                    L 53 18
+                                    C 53 13, 57 13, 58 18
+                                    L 58 60
+                                    L 64 24
+                                    C 64 19, 68 19, 69 24
+                                    L 69 63
+                                    L 75 35
+                                    C 75 30, 79 30, 80 35
+                                    C 82 45, 82 55, 79 66
+                                    C 75 78, 66 94, 61 103
+                                    C 56 110, 52 112, 50 112 Z
+                                " class="hand-path" />
+                            </svg>
+                        </div>
+
+                        <!-- Left Hand Silhouette -->
+                        <div id="overlay-left" class="camera-overlay hidden">
+                            <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid meet">
+                                <circle cx="50" cy="70" r="15" class="scan-target" />
+                                <line x1="50" y1="20" x2="50" y2="100" class="scan-line-dashed" />
+                                <line x1="20" y1="70" x2="80" y2="70" class="scan-line-dashed" />
+                                
+                                <!-- Left hand outline path -->
+                                <path d="
+                                    M 50 112 
+                                    C 54 108, 58 102, 62 95
+                                    C 68 87, 79 82, 83 76
+                                    C 86 70, 84 64, 79 61
+                                    C 75 58, 71 63, 69 69
+                                    L 69 38
+                                    C 69 33, 65 33, 64 38
+                                    L 64 62
+                                    L 58 22
+                                    C 58 17, 54 17, 53 22
+                                    L 53 60
+                                    L 47 18
+                                    C 47 13, 43 13, 42 18
+                                    L 42 60
+                                    L 36 24
+                                    C 36 19, 32 19, 31 24
+                                    L 31 63
+                                    L 25 35
+                                    C 25 30, 21 30, 20 35
+                                    C 18 45, 18 55, 21 66
+                                    C 25 78, 34 94, 39 103
+                                    C 44 110, 48 112, 50 112 Z
+                                " class="hand-path" />
+                            </svg>
+                        </div>
+
+                        <!-- Visual status message overlay -->
+                        <div id="status-toast" class="toast hidden">Tangan Kanan 0/25</div>
+                    </div>
+
+                    <!-- Info and QC Bar -->
+                    <div class="qc-and-counter-grid">
+                        <!-- Lighting QC Panel -->
+                        <div class="qc-panel">
+                            <div class="qc-header">
+                                <span class="panel-label">PENCAHAYAAN (QC)</span>
+                                <span id="light-val" class="qc-value">0 lux</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div id="light-progress" class="progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="qc-status">
+                                <span id="light-status" class="status-indicator yellow">Checking...</span>
+                                <span id="light-instruction" class="status-detail">Mengukur tingkat cahaya sekitar</span>
+                            </div>
+                        </div>
+
+                        <!-- Capture Progress Dashboard -->
+                        <div class="dashboard-panel">
+                            <div class="dashboard-progress">
+                                <svg class="circular-progress-svg" viewBox="0 0 100 100">
+                                    <circle class="circle-bg" cx="50" cy="50" r="40"></circle>
+                                    <circle id="circle-progress" class="circle-fill" cx="50" cy="50" r="40" style="stroke-dashoffset: 251.2;"></circle>
+                                </svg>
+                                <div class="progress-text-overlay">
+                                    <span id="counter-fraction" class="fraction">0/25</span>
+                                    <span id="counter-pct" class="percent">0%</span>
+                                </div>
+                            </div>
+                            <div class="dashboard-stats">
+                                <div id="session-instructions" class="instruction-text">
+                                    Posisikan TANGAN KANAN Anda pada area overlay dan biarkan sistem memindai otomatis.
+                                </div>
+                                <!-- Error warning message display -->
+                                <div id="backend-feedback" class="feedback-msg hidden">
+                                    <span class="feedback-icon">⚠️</span>
+                                    <span id="feedback-text">Peringatan dari server</span>
+                                </div>
+
+                                <!-- Action button to start capturing -->
+                                <button type="button" id="btn-start-capture" class="btn-primary" style="margin-top: 1rem; width: 100%;" disabled>
+                                    Mulai Perekaman
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-left: 8px; vertical-align: middle;">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Ethical Clearance Consent -->
+            <div id="step-4-panel" class="wizard-step-panel glass hidden">
+                <div class="step-header">
+                    <h2>Langkah 4: Lembar Pernyataan Persetujuan (Ethical Clearance)</h2>
+                    <p>Silakan baca surat pernyataan kelayakan etik dan konfirmasi keikutsertaan Anda di bawah ini.</p>
+                </div>
+
+                <div class="ethical-clearance-card glass-inner">
+                    <h3>LEMBAR PERSETUJUAN RESPONDEN (INFORMED CONSENT)</h3>
+                    <div class="ethical-content">
+                        <p>Yang bertanda tangan di bawah ini menyatakan bahwa:</p>
+                        <ol>
+                            <li>Saya telah mendapatkan penjelasan yang lengkap mengenai tujuan, manfaat, dan prosedur penelitian disertasi yang menganalisis hubungan antara fitur biometrik telapak tangan (palmprint) dan tipe kepribadian dengan pendekatan deep learning.</li>
+                            <li>Saya memahami bahwa data biometrik telapak tangan dan jawaban kuesioner kepribadian yang saya berikan akan dijaga kerahasiaannya, disimpan secara aman di database lokal, dan hanya dipergunakan untuk kepentingan analisis akademik dan pengembangan ilmu pengetahuan.</li>
+                            <li>Keikutsertaan saya dalam penelitian ini bersifat sepenuhnya <strong>sukarela</strong> tanpa paksaan dari pihak mana pun. Saya berhak untuk menarik diri atau membatalkan keikutsertaan saya kapan saja tanpa konsekuensi apa pun.</li>
+                            <li>Dengan mencentang persetujuan di bawah ini, saya menyatakan bersedia berpartisipasi sebagai responden dan mengizinkan pengolahan data biometrik telapak tangan saya untuk keperluan riset ini secara sukarela.</li>
+                        </ol>
+                        
+                        <div class="ethical-agree-box">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="chk-ethical-consent">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">Saya membaca, memahami, dan menyetujui pernyataan lembar persetujuan (Ethical Clearance) di atas serta bersedia berpartisipasi secara sukarela.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" id="btn-back-to-step-3" class="btn-secondary" disabled>Kembali ke Kamera</button>
+                    <button type="button" id="btn-submit-all" class="btn-success" disabled>
+                        Kirim & Selesaikan Sesi
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-left: 8px;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transition Jeda Modal -->
+            <div id="transition-modal" class="modal-backdrop hidden">
+                <div class="modal-content glass animate-pop">
+                    <div class="modal-icon right-hand-done">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <h2>Perekaman Tangan Kanan Selesai!</h2>
+                    <p>Sesi perekaman untuk Tangan Kanan (25/25) telah berhasil diselesaikan.</p>
+                    <div class="modal-instruction alert-info">
+                        <strong>Langkah Selanjutnya:</strong> Bersiap untuk merekam <strong>TANGAN KIRI</strong>. Posisikan kembali tangan kiri Anda tepat di posisi visual setelah menekan tombol lanjut.
+                    </div>
+                    <button id="btn-transition-next" class="btn-primary">
+                        Mulai Tangan Kiri
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Finished/Success Modal (Fase Akhir) -->
+            <div id="success-modal" class="modal-backdrop hidden">
+                <div class="modal-content glass animate-pop success-modal-width">
+                    <div class="success-modal-grid">
+                        <div class="success-info-panel">
+                            <div class="modal-icon all-done">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                                    <path d="M22 10v4M2 10v4M12 2v20"/>
+                                </svg>
+                            </div>
+                            <h2>Seluruh Data Tersimpan</h2>
+                            <p>Data biometrik telapak tangan Kanan & Kiri serta hasil kuesioner BFI-60 Anda telah aman disimpan.</p>
+                            
+                            <div class="success-details-card">
+                                <div class="detail-row">
+                                    <span>ID Responden:</span>
+                                    <strong id="summary-id">-</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Nama Responden:</span>
+                                    <strong id="summary-nama">-</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Data Citra & Kuesioner:</span>
+                                    <strong style="color: var(--accent-green);">Tersimpan (SQLite & File)</strong>
+                                </div>
+                            </div>
+
+                            <button id="btn-reset-app" class="btn-success" style="width: 100%; margin-top: 0.5rem;">
+                                Responden Berikutnya
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="success-chart-panel">
+                            <h3>Hasil Analisis Kepribadian OCEAN</h3>
+                            <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="ocean-chart"></canvas>
+                            </div>
+                            <div id="ocean-score-badges" class="ocean-score-badges"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script imports -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
